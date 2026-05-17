@@ -44,7 +44,7 @@ Two Docker containers, one Compose stack, one persistent SQLite volume.
 ### 1. Clone
 
 ```bash
-git clone https://github.com/<your-username>/knx-dashboard.git
+git clone https://github.com/knowthelist/knx-dashboard.git
 cd knx-dashboard
 ```
 
