@@ -1,0 +1,38 @@
+services:
+  backend:
+    build: ./backend
+    container_name: knx-backend
+    restart: unless-stopped
+    volumes:
+      - knx_data:/app/data
+    environment:
+      - KNX_GATEWAY_HOST=${KNX_GATEWAY_HOST:-}
+      - KNX_GATEWAY_PORT=${KNX_GATEWAY_PORT:-3671}
+      # tunneling (unicast) or routing (multicast)
+      - KNX_CONNECTION_TYPE=${KNX_CONNECTION_TYPE:-tunneling}
+      - DATABASE_PATH=/app/data/knx_devices.db
+      - SECRET_KEY=${SECRET_KEY:-changeme-in-production}
+    ports:
+      - "8000:8000"
+      # KNX tunneling needs to receive UDP replies from the gateway
+      - "3671:3671/udp"
+    networks:
+      - knx_net
+
+  frontend:
+    build: ./frontend
+    container_name: knx-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - knx_net
+
+volumes:
+  knx_data:
+
+networks:
+  knx_net:
+    driver: bridge
